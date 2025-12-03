@@ -17,8 +17,12 @@ First, get top $logn$ elements to generate a set where each one's key is its opi
 ## Question 3:
 Stormen, Ceiserson, Livest, and Rein are four academics who wrote a very popular textbook in computer science, affectionately known as SCLR. They just found k first editions in their offices, and want to auction them off online for charity. Each bidder in the auction has a unique integer bidder ID and can bid some positive integer amount for a single copy (but may increase or decrease their bid while the auction is live). Describe a database supporting the following operations, assuming n is the number of bidders in the database at the time of the operation. For each operation, state whether your running time is worst-case, expected, and/or amortized.
 
-```new bid(d, b)``` | record a new bidder ID $d$ with bid $b$ in $O(log n)$ time
-```update bid(d, b)``` | update the bid of existing bidder ID $d$ to bid $b$ in $O(log n)$ time
-```get revenue()``` | return revenue from selling to the current $k$ highest bidders in $O(1)$ time 
+```new_bid(d, b)``` | record a new bidder ID $d$ with bid $b$ in $O(log n)$ time
+```update_bid(d, b)``` | update the bid of existing bidder ID $d$ to bid $b$ in $O(log n)$ time
+```get_revenue()``` | return revenue from selling to the current $k$ highest bidders in $O(1)$ time 
 
-Solution: For first two ops, we just use a set AVL tree or a hash table. For ```get revenue()```, we apply following data structure. Build a set AVL tree with elements keyed by thier ID ```d```, and build a max-priority queue and a min-priority queue. Use ```O(logn)``` time to ```remove``` smallest one of min-priority queue and select largest one of max-priority queue, compare them and insert the one larger into min-priority queue until we find largest k elements and maintain its sum ```B```. With this data structure we have ```get revenue()``` costs ```O(1)```.
+Solution: For first two ops, we just use a set AVL tree or a hash table. For ```get_revenue()```, we apply following data structure. Build a set AVL tree with elements keyed by thier ID ```d```, and build a max-priority queue and a min-priority queue. Use $O(logn)$ time to ```remove``` smallest one of min-priority queue and select largest one of max-priority queue, compare them and insert the one larger into min-priority queue until largest k elements are in min-priority queue and we maintain its sum ```B```. With this data structure we have ```get_revenue()``` costs $O(1)$. After implementing this data structure, we implement ```new_bid(d, b)``` through comparing ```b``` with smallest bid ```b'``` with bid ID ```d'```. Insert the larger one to and remove the smaller one from min-priority queue. Recompute ```B```. This costs $O(logn)$. 
+
+To implement ```update_bid(d, b)```, we firstly remove ```b``` with id ```d```, then add max of max-priority queue, recompute ```B``` and conduct ```new_bid(d, b)``` to add it. This costs $O(logn)$. 
+
+To implement ```get_revenue()```, we just compute ```B```, which takes $O(1)$.
